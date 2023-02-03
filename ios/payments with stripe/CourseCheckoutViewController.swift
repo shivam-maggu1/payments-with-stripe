@@ -171,22 +171,57 @@ class CourseCheckoutViewController: UIViewController {
     private func createPaymentSheet() {
         var configuration = PaymentSheet.Configuration()
         
+        // Autofills the shipping details with the one we collected from user through AddressViewController
+        
         configuration.shippingDetails = { [weak self] in
             return self?.address
         }
         
+        // Configure button for Apple Pay in PaymentSheet
+        
         configuration.applePay = .init(merchantId: "com.example.appname",
                                        merchantCountryCode: "US")
         
+        // Provides checkbox for saving card details
+        
         configuration.savePaymentMethodOptInBehavior = .requiresOptIn
+        
+        // Sets the return url. Used when user needs to go outside the app for authentication
+        
         configuration.returnURL = "payments-with-stripe://stripe-redirect"
+        
+        // Configures the color of the pay button
+        
         configuration.primaryButtonColor = .blue
+        
+        // Shows the name of the company collecting the payment
+        
         configuration.merchantDisplayName = "Dummy Corp Inc"
+        
+        // Allows payments which requires some time to confirm
+        
         configuration.allowsDelayedPaymentMethods = true
+        
+        
+        // Adds default billing details for user to the payment object
+        
+        configuration.defaultBillingDetails.email = "dummy@corp.com"
+        configuration.defaultBillingDetails.name = self.address?.name
+        configuration.defaultBillingDetails.phone = self.address?.phone
+        configuration.defaultBillingDetails.address.country = self.address?.address.country
+        configuration.defaultBillingDetails.address.city = self.address?.address.city
+        configuration.defaultBillingDetails.address.line1 = self.address?.address.line1
+        configuration.defaultBillingDetails.address.line2 = self.address?.address.line2
+        configuration.defaultBillingDetails.address.state = self.address?.address.state
+        configuration.defaultBillingDetails.address.postalCode = self.address?.address.postalCode
+        
+        // Sets customer object to payment object
         
         if let customer = self.viewModel.getCustomer() {
             configuration.customer = customer
         }
+        
+        // Initiaises the PaymentSheet with the above config and client secret received from payment intent API
         
         if let paymentIntentClientSecret = self.viewModel.getPaymentIntentClientSecret() {
             self.paymentSheet = PaymentSheet(paymentIntentClientSecret: paymentIntentClientSecret,
