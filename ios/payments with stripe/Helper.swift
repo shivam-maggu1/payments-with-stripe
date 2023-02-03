@@ -10,6 +10,8 @@ import UIKit
 
 class Helper {
     
+    // Common function for creating an UIAlertController with a default action.
+    
     static func displayAlert(title: String, message: String? = nil) -> UIAlertController {
         let alertController = UIAlertController(title: title,
                                                 message: message,

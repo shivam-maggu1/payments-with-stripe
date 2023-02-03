@@ -12,6 +12,8 @@ protocol ICoordinator {
     func start()
 }
 
+// Handles the flow of ViewControllers in the app
+
 class AppCoordinator: ICoordinator {
     
     let rootViewController: UINavigationController
@@ -20,10 +22,14 @@ class AppCoordinator: ICoordinator {
         self.rootViewController = rootViewController
     }
     
+    // Start point of the coordinator
+    
     func start() {
         self.clearCustomerData()
         self.presentCheckoutController()
     }
+    
+    // Setup and display the checkout controller
     
     private func presentCheckoutController() {
         let apiClient = ApiClient()
@@ -40,6 +46,8 @@ class AppCoordinator: ICoordinator {
         self.rootViewController.pushViewController(controller, animated: true)
     }
     
+    // Setup and display the address sheet
+    
     private func presentAddressCollectionController(_ controller: CourseCheckoutViewController) {
         let addressConfiguration = AddressViewController.Configuration(additionalFields: .init(name: .required,
                                                                                                phone: .required),
@@ -51,6 +59,9 @@ class AppCoordinator: ICoordinator {
         let navigationController = UINavigationController(rootViewController: addressViewController)
         self.rootViewController.present(navigationController, animated: true)
     }
+    
+    // Resets all payment and user related cache
+    // Should be called when user logs out of the app
     
     private func clearCustomerData() {
         PaymentSheet.resetCustomer()

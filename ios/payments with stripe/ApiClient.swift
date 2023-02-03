@@ -13,11 +13,17 @@ protocol IApiClient {
     func createPaymentIntent(cartContent: [String: Any], completion: @escaping PaymentIntentType)
 }
 
+// Handles the API calls to backend for fetching/updating things like course details, payment session, customer details, payment intent etc.
+
 class ApiClient: IApiClient {
+    
+    // Hardcoded backend url for testing
     
     static private let backendURL = URL(string: "http://127.0.0.1:4242")
     
     init() {}
+    
+    // API to create payment intent and fetch data for processing payment
     
     func createPaymentIntent(cartContent: [String: Any], completion: @escaping PaymentIntentType) {
         
@@ -29,7 +35,6 @@ class ApiClient: IApiClient {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try? JSONSerialization.data(withJSONObject: cartContent)
-        
         
         let task = URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) in
                         
@@ -48,6 +53,8 @@ class ApiClient: IApiClient {
                 completion(nil, error)
                 return
             }
+            
+            // Map data used to process payment to data model
             
             let intentObject = try? JSONDecoder().decode(PaymentIntentDataModel.self, from: data)
             completion(intentObject, nil)

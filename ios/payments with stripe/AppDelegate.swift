@@ -15,13 +15,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var appCoordinator: ICoordinator?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        // Override point for customization after application launch.
+                
+        // Set UINavigationController as the initial view controller for the application
         
         let controller = UINavigationController()
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window?.rootViewController = controller
         self.window?.makeKeyAndVisible()
+        
+        // Set the app navigation for navigating to other ViewControllers
+        
         self.appCoordinator = AppCoordinator(rootViewController: controller)
         self.appCoordinator?.start()
         

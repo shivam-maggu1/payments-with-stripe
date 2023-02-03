@@ -8,6 +8,8 @@
 import Foundation
 import Stripe
 
+// Handles all non UI related activities for CourseCheckoutViewController
+
 class CourseCheckoutViewModel {
     
     private let apiClient: IApiClient
@@ -18,7 +20,11 @@ class CourseCheckoutViewModel {
         self.apiClient = apiClient
     }
     
+    // Creates a payment intent for the customer and fetches the important keys and id's for processing a payment
+    
     func fetchPaymentIntent(completion: @escaping ((Bool, String?) -> Void)) {
+        
+        // This could be the details for the item that the customer wants to buy
         
         let cartContent: [String: Any] = ["items": [["id": UUID().uuidString]]]
         
@@ -54,13 +60,21 @@ class CourseCheckoutViewModel {
         }
     }
     
+    // Sets the Publishable key to Stripe SDK
+    // Not required if key is already added to AppDelegate
+    
     private func setPublishableKey(publishableKey: String) {
         STPAPIClient.shared.publishableKey = publishableKey
     }
     
+    // Method to retrieve the customer object
+    
     func getCustomer() -> PaymentSheet.CustomerConfiguration? {
         return self.customer
     }
+    
+    // Method to retrieve the secret key of payment intent
+    // This key will be used to process payments
     
     func getPaymentIntentClientSecret() -> String? {
         return self.paymentIntentClientSecret

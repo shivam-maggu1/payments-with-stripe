@@ -10,6 +10,8 @@ import UIKit
 
 typealias VoidClosure = (() -> Void)
 
+// Handles the UI for displaying the product details which user intends to buy and checkout flow
+
 class CourseCheckoutViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
@@ -89,10 +91,20 @@ class CourseCheckoutViewController: UIViewController {
     
     private let viewModel: CourseCheckoutViewModel
     
+    // Stripe's inbuild bottom sheet to process user payment
+    
     private var paymentSheet: PaymentSheet?
+    
+    // Variable to store address data from Stripe's inbuild address sheet which is used to collect user's billing details
+    
     private var address: AddressViewController.AddressDetails?
     
+    
+    // Triggers the setup and presentation for Address View Controller through the AppCoordinator
+    
     var presentAddressVC: VoidClosure?
+    
+    // MARK: Lifecycle Methods
     
     init(viewModel: CourseCheckoutViewModel) {
         self.viewModel = viewModel
@@ -105,10 +117,11 @@ class CourseCheckoutViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         
         self.setupView()
     }
+    
+    // Setup the UI for the checkout screen
     
     private func setupView() {
         self.view.backgroundColor = .white
@@ -153,6 +166,8 @@ class CourseCheckoutViewController: UIViewController {
         ])
     }
     
+    // Create and configure the payment sheet
+    
     private func createPaymentSheet() {
         var configuration = PaymentSheet.Configuration()
         
@@ -178,6 +193,8 @@ class CourseCheckoutViewController: UIViewController {
                                             configuration: configuration)
         }
     }
+    
+    // Present user with the payment sheet and handles the various payment scenarios
     
     private func presentPaymentSheet() {
         guard let paymentSheet = paymentSheet else { return }
@@ -205,6 +222,8 @@ class CourseCheckoutViewController: UIViewController {
             self.payButton.backgroundColor = status ? .blue : .gray
         }
     }
+    
+    // Action for Address / Pay now button
     
     @objc private func pay() {
         
@@ -254,6 +273,8 @@ extension CourseCheckoutViewController {
 }
 
 extension CourseCheckoutViewController: AddressViewControllerDelegate {
+    
+    // Delegate function to get address details filled by user
     
     func addressViewControllerDidFinish(_ addressViewController: Stripe.AddressViewController, with address: Stripe.AddressViewController.AddressDetails?) {
         addressViewController.dismiss(animated: true) {
